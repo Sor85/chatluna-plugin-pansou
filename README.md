@@ -55,17 +55,6 @@
 - 支持 HTTP(S) 和反向代理路径；根地址不含内嵌凭据、查询参数或片段。服务端重定向会明确失败，避免认证令牌被转发。
 - HTTP、后端错误码和异常响应会返回错误说明；工具取消与插件卸载会中止请求。
 
-## 开发与发布
-
-源码依赖 ChatLuna v2 workspace，开发环境与同步命令见 [开发说明](https://github.com/Sor85/chatluna-plugin-pansou/blob/main/AGENTS.md)。发布在本机完成，不通过 CI 获取私有 v2 依赖。
-
-```bash
-node scripts/publish.mjs --dry-run  # 完整构建、检查、测试与打包演练，不发布
-node scripts/publish.mjs            # 发布当前版本，确认后推送版本标签
-```
-
-正式发布要求源码已提交并推送、npm 已登录且版本未发布；需要两步验证时使用 `--otp=<验证码>`。脚本不会自动递增版本或提交代码，详细说明通过 `node scripts/publish.mjs --help` 查看。
-
 ## 协议
 
 [MIT](LICENSE)
