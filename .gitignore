@@ -1,0 +1,16 @@
+node_modules/
+lib/
+dist/
+coverage/
+*.tsbuildinfo
+.env*
+.DS_Store
+.playwright-cli/
+.playwright-mcp/
+.claude/
+.codex/
+data/
+*.log
+.npmrc
+.token
+.session

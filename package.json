@@ -1,0 +1,50 @@
+{
+  "name": "chatluna-plugin-pansou",
+  "version": "0.0.1",
+  "description": "为 ChatLuna v2 提供 PanSou 网盘资源搜索、提取码与来源展示及网盘分类限量",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/Sor85/chatluna-plugin-pansou#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Sor85/chatluna-plugin-pansou.git" },
+  "bugs": { "url": "https://github.com/Sor85/chatluna-plugin-pansou/issues" },
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "keywords": ["chatluna-plugin", "pansou", "cloud-drive", "search"],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": { "types": "./lib/index.d.ts", "default": "./lib/index.js" },
+    "./package.json": "./package.json"
+  },
+  "files": ["lib", "README.md", "LICENSE"],
+  "engines": { "node": ">=24.0.0" },
+  "scripts": {
+    "sync": "node scripts/sync-to-v2.mjs --once",
+    "sync:watch": "node scripts/sync-to-v2.mjs",
+    "release": "node scripts/publish.mjs",
+    "release:dry-run": "node scripts/publish.mjs --dry-run",
+    "build": "yakumo build",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@chatluna/schema": ">=2.0.0-alpha.0",
+    "cordis": "^4.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@chatluna/schema": "workspace:*",
+    "@chatluna/tool": "workspace:*",
+    "@chatluna/permission": "workspace:*",
+    "@chatluna/symbol": "workspace:*",
+    "@types/node": "24.13.3",
+    "cordis": "4.0.0-rc.12",
+    "typescript": "7.0.2",
+    "vitest": "^3.2.4"
+  },
+  "cordis": {
+    "description": {
+      "zh": "PanSou 网盘资源搜索、提取码与来源展示及网盘分类限量",
+      "en": "Search cloud-drive resources with PanSou, including passwords, sources and per-drive result limits"
+    },
+    "service": { "required": ["tools"] }
+  }
+}
