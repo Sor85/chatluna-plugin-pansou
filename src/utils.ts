@@ -1,5 +1,4 @@
-import { cloudTypes } from './config'
-import type { CloudTypeLimits, PansouLink } from './types'
+import type { PansouLink } from './types'
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -18,12 +17,12 @@ function array(value: unknown): unknown[] {
 }
 
 export function parsePansouResponse(value: unknown): PansouLink[] {
-  if (!isObject(value)) throw new Error('PanSou API 响应格式无效')
-  if (value.code !== undefined && value.code !== 0 && value.code !== '0') {
+  if (!isObject(value) || typeof value.code !== 'number') throw new Error('PanSou API 响应格式无效')
+  if (value.code !== 0) {
     const detail = typeof value.message === 'string' ? value.message : String(value.code)
     throw new Error(`PanSou API 返回错误：${detail}`)
   }
-  const response = value.data === undefined ? value : value.data
+  const response = value.data
   if (!isObject(response)) throw new Error('PanSou API 响应格式无效')
   const merged = response.merged_by_type
   if (merged !== undefined && !isObject(merged)) throw new Error('PanSou API 响应格式无效')
@@ -62,11 +61,10 @@ export function parsePansouResponse(value: unknown): PansouLink[] {
   return links
 }
 
-export function formatPansouResults(links: PansouLink[], keyword: string, maxResults: number, limits: CloudTypeLimits): string {
-  const byType = new Map<string, number | undefined>(cloudTypes.map(([key, type]) => [type, limits[key]]))
+export function formatPansouResults(links: PansouLink[], keyword: string, maxResults: number, limits: Readonly<Partial<Record<string, number>>>): string {
   const counts = new Map<string, number>()
   const limited = links.filter((link) => {
-    const limit = byType.get(link.type)
+    const limit = limits[link.type]
     if (limit === undefined || limit < 1) return true
     const count = counts.get(link.type) ?? 0
     if (count >= limit) return false

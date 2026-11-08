@@ -21,5 +21,4 @@ export interface PansouLink {
 }
 
 export type CloudType = 'baidu' | 'aliyun' | 'quark' | 'tianyi' | '115' | 'xunlei' | 'uc' | 'mobile' | 'pikpak' | '123' | 'magnet' | 'ed2k'
-export type CloudTypeLimitKey = Exclude<CloudType, '115' | '123'> | 'pan115' | 'pan123'
-export type CloudTypeLimits = Partial<Record<CloudTypeLimitKey, number>>
+export type CloudTypeLimits = Partial<Record<CloudType, number>>

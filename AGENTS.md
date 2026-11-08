@@ -28,5 +28,5 @@ ChatLuna v2 网盘资源搜索插件。独立源码目录是唯一编辑入口�
 
 - `scripts/AGENTS.md`：源码同步、本地 npm 发布与演练边界。
 
-- `src/AGENTS.md`：PanSou 协议、配置兼容、工具与生命周期。
-- `tests/AGENTS.md`：迁移验收、协议测试与隔离沙箱测试。
+- `src/AGENTS.md`：PanSou 协议、配置、工具与生命周期。
+- `tests/AGENTS.md`：协议回归、工具集成与隔离沙箱测试。

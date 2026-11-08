@@ -5,15 +5,24 @@ import { searchArgs } from '../src/tool'
 
 const defaults = Config.parse({})
 
-describe('迁移配置与宿主表单', () => {
-  it('保留默认值与十二种分类的稳定键', () => {
+describe('插件配置与宿主表单', () => {
+  it('使用默认值与十二种 PanSou 网盘类型键', () => {
     expect(defaults.baseUrl).toBe('http://127.0.0.1:8888')
     expect(defaults.maxResults).toBe(5)
     expect(defaults.timeout).toBe(30000)
     expect(defaults.defaultCloudTypes).toEqual([])
     expect(defaults.maxResultsByCloudType).toEqual(Object.fromEntries(cloudTypes.map(([key]) => [key, 0])))
-    expect(Object.keys(defaults.maxResultsByCloudType)).toContain('pan115')
-    expect(Object.keys(defaults.maxResultsByCloudType)).toContain('pan123')
+    expect(Object.keys(defaults.maxResultsByCloudType)).toContain('115')
+    expect(Object.keys(defaults.maxResultsByCloudType)).toContain('123')
+    expect(Object.keys(defaults.maxResultsByCloudType)).toHaveLength(12)
+  })
+  it('分类限量使用网盘类型键，不提供旧别名', () => {
+    const config = Config.parse({ maxResultsByCloudType: { '115': 1, '123': 2 } })
+    expect(config.maxResultsByCloudType['115']).toBe(1)
+    expect(config.maxResultsByCloudType['123']).toBe(2)
+    const fields = Object.assign({}, ...(Config.list ?? []).map((part) => part.dict))
+    expect(fields.maxResultsByCloudType.dict).not.toHaveProperty('pan115')
+    expect(fields.maxResultsByCloudType.dict).not.toHaveProperty('pan123')
   })
   it('不暴露工具元数据配置，令牌使用宿主 secret 控件', () => {
     const fields = Object.assign({}, ...(Config.list ?? []).map((part) => part.dict))
@@ -25,11 +34,10 @@ describe('迁移配置与宿主表单', () => {
     for (const field of Object.values(fields)) {
       expect(field).toHaveProperty('meta.label')
     }
-    expect(() => Config.parse({ toolName: 'legacy', toolDescription: 'legacy' })).not.toThrow()
   })
   it.each([
     { maxResults: 0 }, { maxResults: 21 }, { maxResults: 1.5 }, { timeout: 999 },
-    { maxResultsByCloudType: { pan115: -1 } }, { maxResultsByCloudType: { pan123: 21 } },
+    { maxResultsByCloudType: { '115': -1 } }, { maxResultsByCloudType: { '123': 21 } },
     { defaultCloudTypes: ['not-a-config-option'] }, { baseUrl: 'file:///etc/passwd' },
     { baseUrl: 'http://user:pass@example.com' }, { baseUrl: 'http://example.com?token=x' },
   ])('拒绝非法配置 %j', (value) => {

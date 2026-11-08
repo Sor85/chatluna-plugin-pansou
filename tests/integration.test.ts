@@ -15,7 +15,10 @@ afterEach(async () => {
 
 async function backend(handler: Parameters<typeof startBackend>[0] = (_req, response) => {
   response.setHeader('Content-Type', 'application/json')
-  response.end(JSON.stringify({ merged_by_type: { quark: [{ url: 'https://example.com/a', note: '测试结果' }, { url: 'https://example.com/b' }] } }))
+  response.end(JSON.stringify({
+    code: 0, message: 'success',
+    data: { merged_by_type: { quark: [{ url: 'https://example.com/a', note: '测试结果' }, { url: 'https://example.com/b' }] } },
+  }))
 }) {
   const server = await startBackend(handler)
   cleanups.push(server.close)
@@ -113,6 +116,32 @@ describe('Cordis + 原生 Tools 集成', () => {
     if (!second.ok) throw new Error(second.error.message)
     expect(second.value).not.toContain('展示前')
   })
+  it('工具使用 PanSou 类型键执行分类限量', async () => {
+    const { execute } = await runtime({ maxResultsByCloudType: { '115': 1, '123': 1 } }, (_req, res) => {
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ code: 0, data: { merged_by_type: {
+        '115': [{ url: '115-a' }, { url: '115-b' }],
+        '123': [{ url: '123-a' }, { url: '123-b' }],
+      } } }))
+    })
+    const result = await execute({ keyword: '测试' })
+    expect(result.ok).toBe(true)
+    if (!result.ok) throw new Error(result.error.message)
+    expect(result.value).toContain('找到 2 条')
+    expect(result.value).toContain('115-a')
+    expect(result.value).toContain('123-a')
+    expect(result.value).not.toContain('115-b')
+    expect(result.value).not.toContain('123-b')
+  })
+  it('无包装响应不再兼容或伪装为空结果', async () => {
+    const { execute } = await runtime({}, (_req, res) => {
+      res.setHeader('Content-Type', 'application/json')
+      res.end(JSON.stringify({ total: 0, merged_by_type: {} }))
+    })
+    const result = await execute({ keyword: '测试' })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.value).toBe('PanSou 搜索失败：PanSou API 响应格式无效')
+  })
   it('空白关键词不请求，非法参数由原生管线拒绝', async () => {
     const { server, execute } = await runtime()
     const blank = await execute({ keyword: '   ' })
@@ -132,7 +161,7 @@ describe('Cordis + 原生 Tools 集成', () => {
     expect(server.requests).toHaveLength(0)
     off()
   })
-  it('错误文本脱敏并保持旧中文前缀，日志不含正文', async () => {
+  it('错误文本脱敏并使用中文前缀，日志不含正文', async () => {
     const { ctx, execute } = await runtime({ token: 'fixture-token' }, (_req, res) => { res.writeHead(401); res.end('echo fixture-token') })
     const logs: unknown[] = []
     ctx.logger.exporter({ colors: 0, export: (message) => logs.push(message) })

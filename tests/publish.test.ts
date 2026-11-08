@@ -20,7 +20,6 @@ const command = path.basename(process.argv[1])
 const args = process.argv.slice(2)
 const root = process.env.PUBLISH_FIXTURE
 const config = JSON.parse(fs.readFileSync(path.join(root, 'config.json'), 'utf8'))
-const source = path.join(root, 'source')
 const target = path.join(root, 'host/external/pansou')
 const built = path.join(root, 'built')
 const published = path.join(root, 'published.json')
