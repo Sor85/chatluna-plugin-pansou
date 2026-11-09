@@ -1,6 +1,6 @@
 {
   "name": "chatluna-plugin-pansou",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "为 ChatLuna 提供 PanSou 网盘资源搜索、提取码与来源展示及网盘分类限量",
   "type": "module",
   "license": "MIT",
