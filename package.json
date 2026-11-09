@@ -1,7 +1,7 @@
 {
   "name": "chatluna-plugin-pansou",
   "version": "0.0.1",
-  "description": "为 ChatLuna v2 提供 PanSou 网盘资源搜索、提取码与来源展示及网盘分类限量",
+  "description": "为 ChatLuna 提供 PanSou 网盘资源搜索、提取码与来源展示及网盘分类限量",
   "type": "module",
   "license": "MIT",
   "homepage": "https://github.com/Sor85/chatluna-plugin-pansou#readme",
